@@ -125,3 +125,13 @@ body {
 .wallet-actions {
   animation: fadeIn 0.5s ease-in-out;
 }
+
+.logout {
+  background-color: #f44336;
+  color: white;
+  margin-top: 15px;
+}
+
+.logout:hover {
+  background-color: #d32f2f;
+}

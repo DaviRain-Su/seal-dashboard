@@ -23,6 +23,14 @@ function IndexPopup() {
   const [amount, setAmount] = useState("")
 
   useEffect(() => {
+    // 尝试从本地存储中恢复钱包信息
+    const storedMnemonic = localStorage.getItem("walletMnemonic")
+    if (storedMnemonic) {
+      importWallet(storedMnemonic)
+    }
+  }, [])
+
+  useEffect(() => {
     if (publicKey) {
       fetchBalance()
     }
@@ -30,22 +38,24 @@ function IndexPopup() {
 
   const createWallet = async () => {
     const newMnemonic = bip39.generateMnemonic()
-    setMnemonic(newMnemonic)
-    const seed = await bip39.mnemonicToSeed(newMnemonic)
-    const keypair = Keypair.fromSeed(seed.slice(0, 32))
-    setPublicKey(keypair.publicKey.toString())
+    saveWallet(newMnemonic)
   }
 
-  const importWallet = async () => {
-    const userMnemonic = prompt("Enter your mnemonic phrase")
-    if (userMnemonic && bip39.validateMnemonic(userMnemonic)) {
-      setMnemonic(userMnemonic)
-      const seed = await bip39.mnemonicToSeed(userMnemonic)
-      const keypair = Keypair.fromSeed(seed.slice(0, 32))
-      setPublicKey(keypair.publicKey.toString())
+  const importWallet = async (userMnemonic?: string) => {
+    const mnemonicToUse = userMnemonic || prompt("Enter your mnemonic phrase")
+    if (mnemonicToUse && bip39.validateMnemonic(mnemonicToUse)) {
+      saveWallet(mnemonicToUse)
     } else {
       alert("Invalid mnemonic phrase")
     }
+  }
+
+  const saveWallet = async (mnemonicToSave: string) => {
+    setMnemonic(mnemonicToSave)
+    localStorage.setItem("walletMnemonic", mnemonicToSave)
+    const seed = await bip39.mnemonicToSeed(mnemonicToSave)
+    const keypair = Keypair.fromSeed(seed.slice(0, 32))
+    setPublicKey(keypair.publicKey.toString())
   }
 
   const fetchBalance = async () => {
@@ -89,6 +99,14 @@ function IndexPopup() {
     }
   }
 
+  const logout = () => {
+    localStorage.removeItem("walletMnemonic")
+    setPublicKey(null)
+    setBalance(null)
+    setMnemonic(null)
+    setShowMnemonic(false)
+  }
+
   return (
     <div className="container">
       <h1 className="title">Solana Wallet</h1>
@@ -97,7 +115,7 @@ function IndexPopup() {
           <button className="button create" onClick={createWallet}>
             Create New Wallet
           </button>
-          <button className="button import" onClick={importWallet}>
+          <button className="button import" onClick={() => importWallet()}>
             Import Wallet
           </button>
         </div>
@@ -142,6 +160,9 @@ function IndexPopup() {
               Send SOL
             </button>
           </div>
+          <button className="button logout" onClick={logout}>
+            Logout
+          </button>
         </div>
       )}
     </div>
