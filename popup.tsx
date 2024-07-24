@@ -1,4 +1,5 @@
 import {
+  ConfirmedSignatureInfo,
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
@@ -8,7 +9,14 @@ import {
   Transaction
 } from "@solana/web3.js"
 import * as bip39 from "bip39"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
+import {
+  FaEye,
+  FaEyeSlash,
+  FaHistory,
+  FaPaperPlane,
+  FaSignOutAlt
+} from "react-icons/fa"
 
 import "./style.css"
 
@@ -21,9 +29,10 @@ function IndexPopup() {
   const [showMnemonic, setShowMnemonic] = useState(false)
   const [recipient, setRecipient] = useState("")
   const [amount, setAmount] = useState("")
+  const [transactions, setTransactions] = useState<ConfirmedSignatureInfo[]>([])
+  const [showTransactions, setShowTransactions] = useState(false)
 
   useEffect(() => {
-    // 尝试从本地存储中恢复钱包信息
     const storedMnemonic = localStorage.getItem("walletMnemonic")
     if (storedMnemonic) {
       importWallet(storedMnemonic)
@@ -33,6 +42,7 @@ function IndexPopup() {
   useEffect(() => {
     if (publicKey) {
       fetchBalance()
+      fetchTransactions()
     }
   }, [publicKey])
 
@@ -93,9 +103,20 @@ function IndexPopup() {
       )
 
       alert(`Transaction sent! Signature: ${signature}`)
-      fetchBalance() // 更新余额
+      fetchBalance()
+      fetchTransactions()
     } catch (error) {
       alert(`Error: ${error.message}`)
+    }
+  }
+
+  const fetchTransactions = async () => {
+    if (publicKey) {
+      const connection = new Connection(NETWORK, "confirmed")
+      const signatures = await connection.getSignaturesForAddress(
+        new PublicKey(publicKey)
+      )
+      setTransactions(signatures)
     }
   }
 
@@ -105,6 +126,8 @@ function IndexPopup() {
     setBalance(null)
     setMnemonic(null)
     setShowMnemonic(false)
+    setTransactions([])
+    setShowTransactions(false)
   }
 
   return (
@@ -112,36 +135,45 @@ function IndexPopup() {
       <h1 className="title">Solana Wallet</h1>
       {!publicKey ? (
         <div className="wallet-actions">
-          <button className="button create" onClick={createWallet}>
+          <button className="button primary" onClick={createWallet}>
             Create New Wallet
           </button>
-          <button className="button import" onClick={() => importWallet()}>
+          <button className="button secondary" onClick={() => importWallet()}>
             Import Wallet
           </button>
         </div>
       ) : (
         <div className="wallet-info">
-          <div className="info-item">
-            <span className="label">Public Key:</span>
-            <span className="value">{publicKey}</span>
+          <div className="info-card">
+            <h2>Wallet Details</h2>
+            <div className="info-item">
+              <span className="label">Public Key:</span>
+              <span className="value">
+                {publicKey.slice(0, 20)}...{publicKey.slice(-4)}
+              </span>
+            </div>
+            <div className="info-item">
+              <span className="label">Balance:</span>
+              <span className="value">
+                {balance !== null ? `${balance} SOL` : "Loading..."}
+              </span>
+            </div>
           </div>
-          <div className="info-item">
-            <span className="label">Balance:</span>
-            <span className="value">
-              {balance !== null ? `${balance} SOL` : "Loading..."}
-            </span>
-          </div>
+
           {mnemonic && (
             <div className="mnemonic-section">
               <button
-                className="button toggle-mnemonic"
+                className="button secondary"
                 onClick={() => setShowMnemonic(!showMnemonic)}>
+                {showMnemonic ? <FaEyeSlash /> : <FaEye />}{" "}
                 {showMnemonic ? "Hide" : "Show"} Mnemonic
               </button>
               {showMnemonic && <div className="mnemonic">{mnemonic}</div>}
             </div>
           )}
+
           <div className="send-sol-section">
+            <h2>Send SOL</h2>
             <input
               type="text"
               placeholder="Recipient Public Key"
@@ -156,12 +188,36 @@ function IndexPopup() {
               onChange={(e) => setAmount(e.target.value)}
               className="input"
             />
-            <button className="button send" onClick={sendSOL}>
-              Send SOL
+            <button className="button primary" onClick={sendSOL}>
+              <FaPaperPlane /> Send SOL
             </button>
           </div>
-          <button className="button logout" onClick={logout}>
-            Logout
+
+          <div className="transaction-history">
+            <button
+              className="button secondary"
+              onClick={() => setShowTransactions(!showTransactions)}>
+              <FaHistory /> {showTransactions ? "Hide" : "Show"} Transaction
+              History
+            </button>
+            {showTransactions && (
+              <div className="transaction-list">
+                {transactions.map((tx, index) => (
+                  <div key={index} className="transaction-item">
+                    <span className="transaction-signature">
+                      {tx.signature.slice(0, 20)}...
+                    </span>
+                    <span className="transaction-date">
+                      {new Date(tx.blockTime! * 1000).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button className="button danger" onClick={logout}>
+            <FaSignOutAlt /> Logout
           </button>
         </div>
       )}

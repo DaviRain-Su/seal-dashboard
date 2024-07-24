@@ -1,117 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
 body {
-  width: 350px;
+  font-family: "Roboto", sans-serif;
+  background-color: #f0f2f5;
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f4f8;
-  color: #333;
+  padding: 0;
 }
 
 .container {
+  width: 360px;
   padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  color: #3d5afe;
   font-size: 24px;
+  font-weight: 700;
+  color: #4a4a4a;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.wallet-actions,
-.wallet-info {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.create {
-  background-color: #3d5afe;
-  color: white;
-}
-
-.create:hover {
-  background-color: #303f9f;
-}
-
-.import {
-  background-color: #ff4081;
-  color: white;
-}
-
-.import:hover {
-  background-color: #c51162;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.label {
-  font-weight: bold;
-  color: #3d5afe;
-}
-
-.value {
-  word-break: break-all;
-  background-color: #f0f4f8;
-  padding: 5px;
-  border-radius: 3px;
-}
-
-.mnemonic-section,
-.send-sol-section {
+.wallet-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.toggle-mnemonic {
-  background-color: #4caf50;
-  color: white;
+.button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.toggle-mnemonic:hover {
-  background-color: #45a049;
+.button.primary {
+  background-color: #4c6ef5;
+  color: #ffffff;
 }
 
-.mnemonic {
-  background-color: #fff9c4;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 14px;
+.button.primary:hover {
+  background-color: #3b5bdb;
+}
+
+.button.secondary {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.button.secondary:hover {
+  background-color: #dee2e6;
+}
+
+.button.danger {
+  background-color: #fa5252;
+  color: #ffffff;
+}
+
+.button.danger:hover {
+  background-color: #e03131;
+}
+
+.info-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.info-card h2 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #4a4a4a;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.value {
+  font-weight: 400;
+  color: #4a4a4a;
   word-break: break-all;
 }
 
 .input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
   font-size: 14px;
 }
 
-.send {
-  background-color: #00bcd4;
-  color: white;
+.mnemonic-section,
+.send-sol-section,
+.transaction-history {
+  margin-bottom: 20px;
 }
 
-.send:hover {
-  background-color: #0097a7;
+.mnemonic {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  font-size: 14px;
+  word-break: break-all;
 }
 
+.transaction-list {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-signature {
+  color: #4a4a4a;
+}
+
+.transaction-date {
+  color: #6c757d;
+}
+
+/* 添加一些动画效果 */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -121,17 +164,16 @@ body {
   }
 }
 
-.wallet-info,
-.wallet-actions {
+.wallet-info {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.logout {
-  background-color: #f44336;
-  color: white;
-  margin-top: 15px;
+.button,
+.input {
+  transition: all 0.2s ease-in-out;
 }
 
-.logout:hover {
-  background-color: #d32f2f;
+.button:active,
+.input:focus {
+  transform: scale(0.98);
 }
