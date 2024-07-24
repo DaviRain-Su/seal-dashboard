@@ -10,18 +10,17 @@ import React, { useEffect, useState } from "react"
 import "./style.css"
 
 import History from "./components/History"
-// 导入子组件
 import Home from "./components/Home"
+import NetworkSettings from "./components/NetworkSettings"
 import Receive from "./components/Receive"
 import Send from "./components/Send"
 
-const NETWORK = "https://api.devnet.solana.com"
-
 function IndexPopup() {
-  const [publicKey, setPublicKey] = useState<string | null>(null)
-  const [balance, setBalance] = useState<number | null>(null)
-  const [mnemonic, setMnemonic] = useState<string | null>(null)
+  const [publicKey, setPublicKey] = useState(null)
+  const [balance, setBalance] = useState(null)
+  const [mnemonic, setMnemonic] = useState(null)
   const [currentPage, setCurrentPage] = useState("home")
+  const [network, setNetwork] = useState("https://api.devnet.solana.com")
 
   useEffect(() => {
     const loadWallet = async () => {
@@ -34,10 +33,10 @@ function IndexPopup() {
       }
     }
     loadWallet()
-  }, [])
+  }, [network])
 
-  const updateBalance = async (address: string) => {
-    const connection = new Connection(NETWORK, "confirmed")
+  const updateBalance = async (address) => {
+    const connection = new Connection(network, "confirmed")
     const balance = await connection.getBalance(new PublicKey(address))
     setBalance(balance / LAMPORTS_PER_SOL)
   }
@@ -63,6 +62,13 @@ function IndexPopup() {
     localStorage.removeItem("mnemonic")
   }
 
+  const handleNetworkChange = (newNetwork) => {
+    setNetwork(newNetwork)
+    if (publicKey) {
+      updateBalance(publicKey)
+    }
+  }
+
   const renderPage = () => {
     switch (currentPage) {
       case "home":
@@ -73,12 +79,13 @@ function IndexPopup() {
             publicKey={publicKey}
             balance={balance}
             updateBalance={updateBalance}
+            network={network}
           />
         )
       case "receive":
         return <Receive publicKey={publicKey} />
       case "history":
-        return <History publicKey={publicKey} />
+        return <History publicKey={publicKey} network={network} />
       default:
         return <Home publicKey={publicKey} balance={balance} />
     }
@@ -87,6 +94,7 @@ function IndexPopup() {
   return (
     <div className="container">
       <h1 className="title">Solana Wallet</h1>
+      <NetworkSettings onNetworkChange={handleNetworkChange} />
       {!publicKey ? (
         <div className="wallet-actions">
           <button className="button primary" onClick={createWallet}>

@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react"
 
 const NETWORK = "https://api.devnet.solana.com"
 
-const History = ({ publicKey }) => {
+const History = ({ publicKey, network }) => {
   const [transactions, setTransactions] = useState([])
   const [showTransactions, setShowTransactions] = useState(false)
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const connection = new Connection(NETWORK, "confirmed")
+      const connection = new Connection(network, "confirmed")
       const txs = await connection.getSignaturesForAddress(
         new PublicKey(publicKey)
       )

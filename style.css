@@ -274,3 +274,23 @@ body {
   color: #6c757d;
   font-size: 0.9em;
 }
+
+.network-settings {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.network-settings h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #4a4a4a;
+}
+
+.network-settings select,
+.network-settings input {
+  width: 100%;
+  margin-bottom: 10px;
+}

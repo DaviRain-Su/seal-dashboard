@@ -12,13 +12,13 @@ import React, { useState } from "react"
 
 const NETWORK = "https://api.devnet.solana.com"
 
-const Send = ({ publicKey, balance, updateBalance }) => {
+const Send = ({ publicKey, balance, updateBalance, network }) => {
   const [recipient, setRecipient] = useState("")
   const [amount, setAmount] = useState("")
 
   const sendSOL = async () => {
     try {
-      const connection = new Connection(NETWORK, "confirmed")
+      const connection = new Connection(network, "confirmed")
       const mnemonic = localStorage.getItem("mnemonic")
       if (!mnemonic) {
         throw new Error("Mnemonic not found")
