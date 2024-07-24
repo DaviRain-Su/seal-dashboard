@@ -1,63 +1,115 @@
 body {
-  width: 300px;
-  padding: 0;
+  width: 350px;
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f0f4f8;
+  color: #333;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  color: #2c3e50;
+  color: #3d5afe;
   font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  color: #7f8c8d;
-  font-size: 14px;
-  margin-bottom: 20px;
   text-align: center;
+  margin-bottom: 20px;
 }
 
-.counter {
+.wallet-actions {
   display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .button {
-  background-color: #3498db;
-  color: white;
+  padding: 10px 15px;
   border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  font-size: 18px;
+  border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
-.button:hover {
-  background-color: #2980b9;
+.create {
+  background-color: #3d5afe;
+  color: white;
 }
 
-.count {
-  font-size: 24px;
-  margin: 0 15px;
-  color: #2c3e50;
+.create:hover {
+  background-color: #303f9f;
 }
 
-.info {
-  color: #7f8c8d;
+.import {
+  background-color: #ff4081;
+  color: white;
+}
+
+.import:hover {
+  background-color: #c51162;
+}
+
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-weight: bold;
+  color: #3d5afe;
+}
+
+.value {
+  word-break: break-all;
+  background-color: #f0f4f8;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.mnemonic-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toggle-mnemonic {
+  background-color: #4caf50;
+  color: white;
+}
+
+.toggle-mnemonic:hover {
+  background-color: #45a049;
+}
+
+.mnemonic {
+  background-color: #fff9c4;
+  padding: 10px;
+  border-radius: 5px;
   font-size: 14px;
+  word-break: break-all;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.wallet-info,
+.wallet-actions {
+  animation: fadeIn 0.5s ease-in-out;
 }
