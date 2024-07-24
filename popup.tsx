@@ -2,7 +2,10 @@ import {
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
-  PublicKey
+  PublicKey,
+  sendAndConfirmTransaction,
+  SystemProgram,
+  Transaction
 } from "@solana/web3.js"
 import * as bip39 from "bip39"
 import { useEffect, useState } from "react"
@@ -16,6 +19,8 @@ function IndexPopup() {
   const [balance, setBalance] = useState<number | null>(null)
   const [mnemonic, setMnemonic] = useState<string | null>(null)
   const [showMnemonic, setShowMnemonic] = useState(false)
+  const [recipient, setRecipient] = useState("")
+  const [amount, setAmount] = useState("")
 
   useEffect(() => {
     if (publicKey) {
@@ -48,6 +53,39 @@ function IndexPopup() {
       const connection = new Connection(NETWORK, "confirmed")
       const balance = await connection.getBalance(new PublicKey(publicKey))
       setBalance(balance / LAMPORTS_PER_SOL)
+    }
+  }
+
+  const sendSOL = async () => {
+    if (!publicKey || !mnemonic) {
+      alert("Please create or import a wallet first")
+      return
+    }
+
+    const connection = new Connection(NETWORK, "confirmed")
+    const seed = await bip39.mnemonicToSeed(mnemonic)
+    const fromKeypair = Keypair.fromSeed(seed.slice(0, 32))
+
+    try {
+      const toPublicKey = new PublicKey(recipient)
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: fromKeypair.publicKey,
+          toPubkey: toPublicKey,
+          lamports: LAMPORTS_PER_SOL * parseFloat(amount)
+        })
+      )
+
+      const signature = await sendAndConfirmTransaction(
+        connection,
+        transaction,
+        [fromKeypair]
+      )
+
+      alert(`Transaction sent! Signature: ${signature}`)
+      fetchBalance() // 更新余额
+    } catch (error) {
+      alert(`Error: ${error.message}`)
     }
   }
 
@@ -85,6 +123,25 @@ function IndexPopup() {
               {showMnemonic && <div className="mnemonic">{mnemonic}</div>}
             </div>
           )}
+          <div className="send-sol-section">
+            <input
+              type="text"
+              placeholder="Recipient Public Key"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              className="input"
+            />
+            <input
+              type="number"
+              placeholder="Amount (SOL)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="input"
+            />
+            <button className="button send" onClick={sendSOL}>
+              Send SOL
+            </button>
+          </div>
         </div>
       )}
     </div>
