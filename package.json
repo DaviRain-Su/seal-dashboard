@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@project-serum/borsh": "^0.2.5",
+    "@solana/spl-token": "^0.4.8",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/web3.js": "^1.95.1",
     "bip39": "^3.1.0",
